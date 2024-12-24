@@ -8,7 +8,36 @@ use Illuminate\Support\Facades\Http;
 
 class FilmController extends Controller
 {
+    public function tim_kiem (Request $request,$id){
+        if ($request->has('page')) {
+            $page = $request->get('page');
+        } else {
+            $page = 1;
+        }
+        $slug = $id;
+        $url = "https://phim.nguonc.com/api/films/search?keyword=${slug}";
+        try {
+            $response = Http::get($url);
 
+            if ($response->successful()) {
+                return $response->json();
+            }
+            return [
+                'error' => true,
+                'message' => 'Failed to fetch films',
+                'status' => $response->status(),
+            ];
+        } catch (\Exception $e) {
+            // Handle exceptions
+            return [
+                'error' => true,
+                'message' => $e->getMessage(),
+            ];
+        }
+    }
+     /**
+     * Display a listing of the resource.
+     */
     public function film_theo_nam($id,Request $request){
         if ($request->has('page')) {
             $page = $request->get('page');
